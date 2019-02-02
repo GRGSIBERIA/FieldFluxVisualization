@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataMapper
+public class DataMapper : MonoBehaviour
 {
 
 }
