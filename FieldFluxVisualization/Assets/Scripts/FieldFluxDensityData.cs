@@ -26,7 +26,10 @@ public class FieldFluxDensityData : DataMapper
         render.material = new Material(Shader.Find("Unlit/ResultCubeShader"));
         render.material.enableInstancing = true;
 
+        transform.localScale = Difference;
         go.transform.parent = transform;
+
+        Destroy(go.GetComponent<BoxCollider>());
         return go;
     }
 
@@ -34,8 +37,6 @@ public class FieldFluxDensityData : DataMapper
 
     private void MigrateNull()
     {
-        
-
         if (FieldSize == new Vector3())
             FieldSize = new Vector3(10, 10, 10);
         if (NumofField == new Vector3Int())
@@ -57,7 +58,7 @@ public class FieldFluxDensityData : DataMapper
         }
     }
 
-    private void Awake()
+    private void Start()
     {
         MigrateNull();
 
@@ -71,17 +72,23 @@ public class FieldFluxDensityData : DataMapper
             {
                 for (int z = 0; z < NumofField.z; ++z)
                 {
-                    var go = GameObject.Instantiate(original, new Vector3(x * Difference.x, y * Difference.y, z * Difference.z), Quaternion.identity, transform);
-                    objects[x, y, z] = go;
+                    var position = new Vector3(x, y, z);
+                    var go = GameObject.Instantiate(original, position, Quaternion.identity, transform);
+                    objects[x, y, z] = go;        // 必要かどうか検討したほうがいい
 
                     var color = Color.HSVToRGB(FluxDensity[x, y, z], 1, 1);
                     color.a = FluxDensity[x, y, z];
-                    props.SetColor("_Color", color);
+                    props.SetColor("_Color", color);    // GPU Instancing 側に色を設定
 
                     var render = go.GetComponent<MeshRenderer>();
-                    render.SetPropertyBlock(props);
+                    render.SetPropertyBlock(props);     // レンダラに転送
                 }
             }
         }
+    }
+
+    private void Update()
+    {
+        Debug.Log(objects[2, 0, 0].transform.position);
     }
 }
