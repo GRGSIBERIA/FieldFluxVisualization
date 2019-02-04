@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataMapper : MonoBehaviour
+public interface DataInterface
 {
-
+    GameObject CreateOriginalGameObject();
 }

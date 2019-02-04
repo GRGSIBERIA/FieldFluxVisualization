@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WireData : MonoBehaviour
+public class WireData : MonoBehaviour, DataInterface
 {
     [SerializeField]
-    public Vector3[,] Wires { get; set; }
-
-    [SerializeField]
-    public int NumofWires { get; set; }
-
-    [SerializeField]
-    public int NumofTimes { get; set; }
-
-    [SerializeField]
-    public int CurrentFrame { get; set; }
+    public int currentFrame;
 
     [SerializeField]
     public float crossSize = 0.001f;
 
     [SerializeField]
     public Color color = Color.white;
+
+    public Vector3[,] Positions { get; set; }
+
+    public int NumofWires { get; set; }
+
+    public int NumofTimes { get; set; }
+
+    public int CurrentFrame { get { return currentFrame; } set { currentFrame = value; } }
 
     public float CrossSize { get { return crossSize; } set { crossSize = value; } }
 
@@ -30,25 +29,25 @@ public class WireData : MonoBehaviour
 
     private void MigrateNull()
     {
-        if (Wires != null) return;
+        if (Positions != null) return;
 
         NumofWires = 200;
         NumofTimes = 5;
 
-        Wires = new Vector3[NumofTimes, NumofWires];
+        Positions = new Vector3[NumofTimes, NumofWires];
 
         for (int i = 0; i < NumofWires; ++i)
         {
             for (int j = 0; j < NumofTimes; ++j)
             {
-                Wires[j, i] = new Vector3(0.005f * i, 0, 0.05f);
+                Positions[j, i] = new Vector3(0.005f * i, 0, 0.05f);
             }
         }
         
         CurrentFrame = 0;
     }
 
-    GameObject CreateOriginalGameObject()
+    public GameObject CreateOriginalGameObject()
     {
         var original = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
@@ -58,7 +57,7 @@ public class WireData : MonoBehaviour
         renderer.material = new Material(Shader.Find("Unlit/ResultCubeShader"));
         renderer.material.color = color;
 
-        Destroy(original.GetComponent<Collider>());
+        Destroy(original.GetComponent<SphereCollider>());
 
         return original;
     }
@@ -75,7 +74,7 @@ public class WireData : MonoBehaviour
 
         for (int i = 0; i < NumofWires; ++i)
         {
-            Instantiate(original, Wires[CurrentFrame, i], Quaternion.identity, transform);
+            wireObjects[i] = Instantiate(original, Positions[CurrentFrame, i], Quaternion.identity, transform);
         }
 
         Destroy(original);
