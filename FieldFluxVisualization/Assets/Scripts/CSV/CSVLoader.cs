@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 public class CSVLoader<MAPPER>
-    where MAPPER : DataMapper, new()
+    where MAPPER : MonoBehaviour, new()
 {
     public string Path { get; private set; }
 

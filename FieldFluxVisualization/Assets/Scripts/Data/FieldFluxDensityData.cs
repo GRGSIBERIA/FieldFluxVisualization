@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldFluxDensityData : DataMapper
+public class FieldFluxDensityData : MonoBehaviour
 {
     [SerializeField]
     public Vector3 FieldSize { get; set; }
