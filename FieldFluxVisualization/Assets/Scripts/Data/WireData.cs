@@ -80,9 +80,4 @@ public class WireData : MonoBehaviour
 
         Destroy(original);
     }
-
-    private void Update()
-    {
-        material.color = color;
-    }
 }
